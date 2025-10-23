@@ -8,7 +8,7 @@ from visu.entry_pair_builder import EntryPairBuilder
 
 class PollPanel(ttk.Frame, EntryPairBuilder):
     def __init__(self, master=None):
-        super().__init__(master)
+        super().__init__(master, borderwidth=1, relief="solid", padding=10)
         self.connector = di.Container.modbus_connector()
         self.con_panel = di.Container.con_panel()
 
@@ -24,7 +24,7 @@ class PollPanel(ttk.Frame, EntryPairBuilder):
                                            command=lambda: self.connector.stopSearch())
 
         textFrame = ttk.Frame(master=self)
-        self.textArea = Text(master=textFrame, width=45, height=8, wrap="word", state="disabled")
+        self.textArea = Text(master=textFrame, width=42, height=8, wrap="word", state="disabled")
         scroll = ttk.Scrollbar(master=textFrame, orient="vertical", command=self.textArea.yview)
 
         self.textArea.pack(side=LEFT)
@@ -47,10 +47,10 @@ class PollPanel(ttk.Frame, EntryPairBuilder):
         self.connector.searchAll(startAddr, stopAddr)
 
     def getStartSearchAddress(self) -> int:
-        return int(self.startSearchStrVar.get())
+        return self.get_int_from_str(self.startSearchStrVar.get())
 
     def getStopSearchAddress(self) -> int:
-        return int(self.stopSearchStrVar.get())
+        return self.get_int_from_str(self.stopSearchStrVar.get())
 
     def clearTextArea(self):
         self.textArea.configure(state='normal')

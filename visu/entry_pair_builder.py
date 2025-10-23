@@ -26,3 +26,12 @@ class EntryPairBuilder:
     @staticmethod
     def validate_entry(txt):
         return txt.isdecimal()
+
+    @staticmethod
+    def get_int_from_str(txt: str):
+        res = 0
+        try:
+            res = int(txt)
+        except:
+            pass
+        return res

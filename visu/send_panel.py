@@ -9,7 +9,7 @@ from visu.entry_pair_builder import EntryPairBuilder
 
 class SendPanel(ttk.Frame, EntryPairBuilder):
     def __init__(self, master=None):
-        super().__init__(master)
+        super().__init__(master, borderwidth=1, relief="solid", padding=10)
         self.connector = di.Container.modbus_connector()
         self.con_panel = di.Container.con_panel()
         fields_frame = ttk.Frame(self)
@@ -19,7 +19,7 @@ class SendPanel(ttk.Frame, EntryPairBuilder):
                                                                                      master=fields_frame)
         self.sendButton = ttk.Button(master=self, text="Отправить", command=lambda: self.sendAction())
         fields_frame.pack()
-        self.sendButton.pack()
+        self.sendButton.pack(fill=BOTH)
         self.pack()
 
     def sendAction(self):
@@ -32,10 +32,10 @@ class SendPanel(ttk.Frame, EntryPairBuilder):
             self.connector.sendAddress(cur_addr, new_addr)
 
     def getCurrentAddress(self) -> int:
-        return int(self.deviceAddressStrVar.get())
+        return self.get_int_from_str(self.deviceAddressStrVar.get())
 
     def getNewAddress(self) -> int:
-        return int(self.sendAddressStrVar.get())
+        return self.get_int_from_str(self.sendAddressStrVar.get())
 
     def lock(self):
         self.deviceAddressField.config(state='disabled')

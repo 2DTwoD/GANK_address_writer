@@ -14,7 +14,7 @@ class ConnectionPanel(ttk.Frame):
     ports_list = []
 
     def __init__(self, master=None):
-        super().__init__(master)
+        super().__init__(master, borderwidth=1, relief="solid", padding=10)
         self.update_ports_list()
         self.port_combo = self._get_combo_pair("Порт:", self.ports_list, 0)
         self.baud_combo = self._get_combo_pair("Скорость:", baud_list, 3)
