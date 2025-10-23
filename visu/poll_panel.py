@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk, Text
+
 from misc import di
+
 from visu.entry_pair_builder import EntryPairBuilder
 
 

@@ -6,6 +6,7 @@ from enum import Enum
 
 from misc import di
 
+
 class ModbusRequest(Enum):
     READ_ALL = 1
     SEND_ADDRESS = 2
@@ -59,8 +60,8 @@ class ModbusConnector:
         client = self.con_panel.getModbusClient()
         if client.connect():
             print("Соединение установлено")
-            self.poll_panel.clearTextArea()
             if request == ModbusRequest.READ_ALL:
+                self.poll_panel.clearTextArea()
                 self.main_window.setStatus("Опрос сети ...")
                 for i in range(dev_addr, new_dev_addr + 1):
                     cur_addr = -1
@@ -88,6 +89,9 @@ class ModbusConnector:
             client.close()
             print("Соединение закрыто")
             self.main_window.setStatus("Готов")
+        else:
+            self.poll_panel.clearTextArea()
+            self.poll_panel.insertToTextArea("Ошибка COM-порта")
         self.active = False
         self._unlock_panels()
         print("Поток остановлен")

@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter.messagebox import askyesno
 
 from misc import di
+
 from visu.entry_pair_builder import EntryPairBuilder
 
 

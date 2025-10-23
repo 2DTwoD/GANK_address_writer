@@ -15,7 +15,8 @@ class EntryPairBuilder:
         frame.pack(side=LEFT)
         return field, strVar
 
-    def _limit_address(self, address):
+    @staticmethod
+    def _limit_address(address):
         if address < 1:
             return 1
         elif address > 247:
