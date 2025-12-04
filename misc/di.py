@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 
 from com.modbus import ModbusConnector
+from misc.file_work import FileWork
 from visu.connection_panel import ConnectionPanel
 from visu.main_window import MainWindow
 from visu.poll_panel import PollPanel
@@ -13,3 +14,4 @@ class Container(containers.DeclarativeContainer):
     poll_panel = providers.Singleton(PollPanel)
     send_panel = providers.Singleton(SendPanel)
     modbus_connector = providers.Singleton(ModbusConnector)
+    file_work = providers.Singleton(FileWork)

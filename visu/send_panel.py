@@ -23,19 +23,18 @@ class SendPanel(ttk.Frame, EntryPairBuilder):
         self.pack()
 
     def sendAction(self):
-        cur_addr = self._limit_address(self.getCurrentAddress())
-        new_addr = self._limit_address(self.getNewAddress())
+        cur_addr = self.getCurrentAddress()
+        new_addr = self.getNewAddress()
         self.deviceAddressStrVar.set(f"{cur_addr}")
         self.sendAddressStrVar.set(f"{new_addr}")
-        res = askyesno(title="Подтверждение", message=f"Сейчас адрес: {cur_addr} -->  станет: {new_addr}")
-        if res:
+        if askyesno(title="Подтверждение", message=f"Сейчас адрес: {cur_addr} -->  станет: {new_addr}"):
             self.connector.sendAddress(cur_addr, new_addr)
 
     def getCurrentAddress(self) -> int:
-        return self.get_int_from_str(self.deviceAddressStrVar.get())
+        return self.get_valid_int_from_str(self.deviceAddressStrVar.get(), 1)
 
     def getNewAddress(self) -> int:
-        return self.get_int_from_str(self.sendAddressStrVar.get())
+        return self.get_valid_int_from_str(self.sendAddressStrVar.get(), self.getCurrentAddress(), False)
 
     def lock(self):
         self.deviceAddressField.config(state='disabled')
@@ -46,3 +45,10 @@ class SendPanel(ttk.Frame, EntryPairBuilder):
         self.deviceAddressField.config(state='normal')
         self.sendAddressField.config(state='normal')
         self.sendButton.config(state='normal')
+
+    def setConfig(self, config: dict):
+        self.deviceAddressStrVar.set(str(config["cur_address"]))
+        self.sendAddressStrVar.set(str(config["new_address"]))
+
+    def getConfig(self):
+        return int(self.deviceAddressStrVar.get()), int(self.sendAddressStrVar.get())

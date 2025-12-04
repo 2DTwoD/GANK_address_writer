@@ -76,9 +76,19 @@ class ConnectionPanel(ttk.Frame):
         self.parity_combo.config(state="disabled")
         self.stop_bits_combo.config(state="disabled")
 
+
     def unlock(self):
         self.port_combo.config(state="normal")
         self.baud_combo.config(state="normal")
         self.num_of_bits_combo.config(state="normal")
         self.parity_combo.config(state="normal")
         self.stop_bits_combo.config(state="normal")
+
+    def setConfig(self, config: dict):
+        self.baud_combo.current(config["baudrate"])
+        self.num_of_bits_combo.current(config["num_of_bits"])
+        self.parity_combo.current(config["parity"])
+        self.stop_bits_combo.current(config["stop_bits"])
+
+    def getConfig(self):
+        return self.baud_combo.current(), self.num_of_bits_combo.current(), self.parity_combo.current(), self.stop_bits_combo.current()

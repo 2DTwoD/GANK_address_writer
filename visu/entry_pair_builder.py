@@ -7,8 +7,9 @@ class EntryPairBuilder:
         frame = ttk.Frame(master)
         label = ttk.Label(frame, text=labelText)
         strVar = StringVar(value=firstValue)
+
         field = ttk.Entry(frame, width=7, textvariable=strVar, validate="key",
-                          validatecommand=(master.register(self.validate_entry), "%S"))
+                          validatecommand=(master.register(self.validate_entry), "%S", '%P'))
         field.config()
         label.pack(side=LEFT)
         field.pack(side=LEFT)
@@ -16,22 +17,32 @@ class EntryPairBuilder:
         return field, strVar
 
     @staticmethod
-    def _limit_address(address):
+    def _limit_address(address) -> (int, bool):
         if address < 1:
-            return 1
+            return 1, True
         elif address > 247:
-            return 247
-        return address
+            return 247, True
+        return address, False
 
     @staticmethod
-    def validate_entry(txt):
-        return txt.isdecimal()
+    def validate_entry(c, txt):
+        return c.isdecimal() and (len(txt) < 4)
 
     @staticmethod
-    def get_int_from_str(txt: str):
+    def get_int_from_str(txt: str) -> (int, bool):
         res = 0
+        err = False
         try:
             res = int(txt)
         except:
-            pass
-        return res
+            err = True
+        return res, err
+
+    def get_valid_int_from_str(self, txt: str, err_value: int, apply_lim: bool = True) -> int:
+        result, err = self.get_int_from_str(txt)
+        if err:
+            result = err_value
+        result, limited = self._limit_address(result)
+        if limited and not apply_lim:
+            return err_value
+        return result
