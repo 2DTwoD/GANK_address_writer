@@ -2,7 +2,7 @@ from dependency_injector import containers, providers
 
 from com.modbus import ModbusConnector
 from misc.file_work import FileWork
-from visu.connection_panel import ConnectionPanel
+from visu.con_panel import ConnectionPanel
 from visu.main_window import MainWindow
 from visu.poll_panel import PollPanel
 from visu.send_panel import SendPanel

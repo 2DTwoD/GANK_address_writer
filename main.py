@@ -5,7 +5,7 @@ from misc import di
 win_width = 400
 win_height = 390
 
-version = "1.1"
+version = "1.2"
 
 if __name__ == "__main__":
     window = Tk()

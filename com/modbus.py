@@ -57,12 +57,14 @@ class ModbusConnector:
         self.active = True
         self._init_panels()
         self._lock_panels()
+        self.poll_panel.clearTextArea()
         client = self.con_panel.getModbusClient()
         if client.connect():
             print("Соединение установлено")
             if request == ModbusRequest.READ_ALL:
                 self.poll_panel.clearTextArea()
                 self.main_window.setStatus("Опрос сети ...")
+                self.poll_panel.insertToTextArea(f"Опрос сети в диапазоне ({dev_addr}..{new_dev_addr}):\n")
                 for i in range(dev_addr, new_dev_addr + 1):
                     cur_addr = -1
                     if not self.active:
@@ -78,19 +80,20 @@ class ModbusConnector:
                     except ModbusException:
                         print(f"Нет устройства с адресом: {i}")
                         self.poll_panel.insertToTextArea(f"{i}(Нет), ")
-
+                self.poll_panel.insertToTextArea("\nОпрос завершен")
             elif request == ModbusRequest.SEND_ADDRESS:
                 self.poll_panel.lockStopSearchButton()
                 self.main_window.setStatus("Отправка адреса...")
                 try:
                     client.write_register(address=0, value=new_dev_addr, device_id=dev_addr)
+                    self.poll_panel.insertToTextArea(f"Отправлено: {dev_addr} --> {new_dev_addr}")
                 except ModbusException as exc:
+                    self.poll_panel.insertToTextArea("Ошибка при отправке")
                     pass
             client.close()
             print("Соединение закрыто")
             self.main_window.setStatus("Готов")
         else:
-            self.poll_panel.clearTextArea()
             self.poll_panel.insertToTextArea("Ошибка COM-порта")
         self.active = False
         self._unlock_panels()
