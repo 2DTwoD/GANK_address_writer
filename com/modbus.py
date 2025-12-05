@@ -66,7 +66,6 @@ class ModbusConnector:
                 self.main_window.setStatus("Опрос сети ...")
                 self.poll_panel.insertToTextArea(f"Опрос сети в диапазоне ({dev_addr}..{new_dev_addr}):\n")
                 for i in range(dev_addr, new_dev_addr + 1):
-                    cur_addr = -1
                     if not self.active:
                         break
                     try:
@@ -85,11 +84,11 @@ class ModbusConnector:
                 self.poll_panel.lockStopSearchButton()
                 self.main_window.setStatus("Отправка адреса...")
                 try:
+                    self.poll_panel.insertToTextArea(f"Отправка: {dev_addr} --> {new_dev_addr}")
                     client.write_register(address=0, value=new_dev_addr, device_id=dev_addr)
-                    self.poll_panel.insertToTextArea(f"Отправлено: {dev_addr} --> {new_dev_addr}")
+                    self.poll_panel.insertToTextArea(f"\nОтправка завершена")
                 except ModbusException as exc:
-                    self.poll_panel.insertToTextArea("Ошибка при отправке")
-                    pass
+                    self.poll_panel.insertToTextArea(f"\nИсключение: {exc.string}")
             client.close()
             print("Соединение закрыто")
             self.main_window.setStatus("Готов")
