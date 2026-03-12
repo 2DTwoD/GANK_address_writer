@@ -1,3 +1,4 @@
+import time
 from threading import Thread
 
 from pymodbus import ModbusException
@@ -69,8 +70,7 @@ class ModbusConnector:
                     if not self.active:
                         break
                     try:
-                        res = client.read_holding_registers(address=0, count=1, device_id=i)
-                        cur_addr = client.convert_from_registers(res.registers, data_type=client.DATATYPE.INT16)
+                        cur_addr = ModbusConnector._get_device_addr(client, i)
                         print(f"Нашел устройство с адресом: {i}({cur_addr})")
                         res_str = "Да"
                         if i != cur_addr:
@@ -85,10 +85,14 @@ class ModbusConnector:
                 self.main_window.setStatus("Отправка адреса...")
                 try:
                     self.poll_panel.insertToTextArea(f"Отправка: {dev_addr} --> {new_dev_addr}")
-                    client.write_register(address=0, value=new_dev_addr, device_id=dev_addr)
-                    self.poll_panel.insertToTextArea(f"\nОтправка завершена")
-                except ModbusException as exc:
-                    self.poll_panel.insertToTextArea(f"\nИсключение: {exc.string}")
+                    client.write_register(address=0, value=new_dev_addr, device_id=dev_addr, no_response_expected=True)
+                    time.sleep(1)
+                    cur_addr = ModbusConnector._get_device_addr(client, new_dev_addr)
+                    if new_dev_addr != cur_addr:
+                        raise ModbusException("Рекомендуется проверить новый адрес устройства")
+                    self.poll_panel.insertToTextArea(f"\nОтправка завершена, текущий адрес устройства: {cur_addr}")
+                except ModbusException as e:
+                    self.poll_panel.insertToTextArea(f"\nИсключение: {e.string}")
             client.close()
             print("Соединение закрыто")
             self.main_window.setStatus("Готов")
@@ -97,3 +101,8 @@ class ModbusConnector:
         self.active = False
         self._unlock_panels()
         print("Поток остановлен")
+
+    @staticmethod
+    def _get_device_addr(client, device_id):
+        res = client.read_holding_registers(address=0, count=1, device_id=device_id)
+        return client.convert_from_registers(res.registers, data_type=client.DATATYPE.INT16)
